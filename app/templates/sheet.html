@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ sheet.title }} · CheatSheet Hub{% endblock %}
+{% block head %}
+<meta property="og:title" content="{{ sheet.title }}">
+<meta property="og:description" content="{{ sheet.category }} cheatsheet — {{ sheet.description[:150] }}">
+<meta property="og:type" content="article">
+{% endblock %}
+{% block content %}
+<div class="card" style="max-width:640px">
+  <span class="badge">{{ sheet.category }}</span>
+  {% if sheet.status != 'approved' %}<span class="badge" style="border-color:#d29922;color:#d29922">{{ sheet.status }} — only you and admin can see this</span>{% endif %}
+  <h1 style="margin:4px 0">{{ sheet.title }}</h1>
+  <div style="white-space:pre-wrap">{{ sheet.description }}</div>
+  <div class="meta">by @{{ sheet.owner.username }} · {{ sheet.original_name }} · {{ sheet.size|filesize }} · {{ sheet.downloads }} downloads</div>
+  <div class="actions">
+    <a class="btn" href="/download/{{ sheet.id }}">{{ "Download" if user else "Log in to download" }}</a>
+    {% if sheet.status == 'approved' %}<button type="button" class="btn ghost" onclick="share('/sheet/{{ sheet.id }}', this)">Share</button>{% endif %}
+  </div>
+</div>
+{% endblock %}

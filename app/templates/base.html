@@ -3,11 +3,12 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{% block title %}CheatSheet Hub{% endblock %}</title>
 <link rel="stylesheet" href="/static/style.css">
+{% block head %}{% endblock %}
 </head><body>
 <nav><div class="wrap">
   <a class="brand" href="/">⚡ CheatSheet Hub</a>
   {% if user %}
-    <a href="/upload">Upload</a><a href="/mine">My uploads</a>
+    {% if user.is_admin %}<a href="/admin">Admin</a><a href="/upload">Upload</a><a href="/mine">My uploads</a>{% endif %}
     <span class="meta">@{{ user.username }}</span>
     <form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Logout</button></form>
   {% else %}
@@ -18,4 +19,12 @@
   {% if flash %}<div class="msg">{{ flash }}</div>{% endif %}
   {% if error %}<div class="msg err">{{ error }}</div>{% endif %}
   {% block content %}{% endblock %}
-</main></body></html>
+</main><script>
+function share(path, btn) {
+  const url = location.origin + path;
+  const done = () => { btn.textContent = "Link copied!"; setTimeout(() => btn.textContent = "Share", 2000); };
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => prompt("Copy this link:", url));
+  else prompt("Copy this link:", url);
+}
+</script>
+</body></html>

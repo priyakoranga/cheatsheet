@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import String, Integer, Text, DateTime, ForeignKey
+from sqlalchemy import Boolean, String, Integer, Text, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .database import Base
@@ -16,6 +16,8 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     username: Mapped[str] = mapped_column(String(30), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
+    email_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     sheets: Mapped[list["Cheatsheet"]] = relationship(back_populates="owner")
 
@@ -30,6 +32,7 @@ class Cheatsheet(Base):
     original_name: Mapped[str] = mapped_column(String(255))
     size: Mapped[int] = mapped_column(Integer)
     downloads: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(10), default="pending", index=True)  # pending | approved | rejected
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     owner: Mapped[User] = relationship(back_populates="sheets")

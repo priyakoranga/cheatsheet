@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Login</h1>
+<form class="form" method="post">
+  <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="next" value="{{ next or '' }}">
+  <label>Email</label><input type="email" name="email" required>
+  <label>Password</label><input type="password" name="password" required>
+  <p><button class="btn">Login</button> <a href="/register?next={{ (next or '')|urlencode }}">Need an account?</a> · <a href="/resend">Resend verification</a></p>
+</form>
+{% endblock %}

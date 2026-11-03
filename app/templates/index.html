@@ -9,16 +9,18 @@
   </select>
   <button class="btn">Search</button>
 </form>
-{% if not sheets %}<p class="meta">Nothing here yet.{% if user %} <a href="/upload">Upload the first one</a>.{% endif %}</p>{% endif %}
+{% if not sheets %}<p class="meta">Nothing here yet.{% if user and user.is_admin %} <a href="/upload">Upload the first one</a>.{% endif %}</p>{% endif %}
 <div class="grid">
 {% for s in sheets %}
   <div class="card">
     <span class="badge">{{ s.category }}</span>
-    <h3>{{ s.title }}</h3>
+    {% if s.status != 'approved' %}<span class="badge" style="border-color:#d29922;color:#d29922">{{ s.status }}</span>{% endif %}
+    <h3><a href="/sheet/{{ s.id }}" style="color:inherit">{{ s.title }}</a></h3>
     <div>{{ s.description[:140] }}{{ '…' if s.description|length > 140 }}</div>
     <div class="meta">by @{{ s.owner.username }} · {{ s.size|filesize }} · {{ s.downloads }} downloads</div>
     <div class="actions">
-      <a class="btn" href="/download/{{ s.id }}">Download</a>
+      <a class="btn" href="/download/{{ s.id }}">{{ "Download" if user else "Log in to download" }}</a>
+      {% if s.status == 'approved' %}<button type="button" class="btn ghost" onclick="share('/sheet/{{ s.id }}', this)">Share</button>{% endif %}
       {% if user and user.id == s.owner_id %}
       <form method="post" action="/delete/{{ s.id }}" onsubmit="return confirm('Delete this cheatsheet?')">
         <input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn danger">Delete</button></form>
