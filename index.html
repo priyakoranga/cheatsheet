@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<form class="filters" method="get">
+  <input name="q" placeholder="Search kubectl, terraform, SLOs, prompts…" value="{{ q }}">
+  <select name="category" onchange="this.form.submit()">
+    <option value="">All categories</option>
+    {% for c in categories %}<option {{ 'selected' if c == category }}>{{ c }}</option>{% endfor %}
+  </select>
+  <button class="btn">Search</button>
+</form>
+{% if not sheets %}<p class="meta">Nothing here yet.{% if user %} <a href="/upload">Upload the first one</a>.{% endif %}</p>{% endif %}
+<div class="grid">
+{% for s in sheets %}
+  <div class="card">
+    <span class="badge">{{ s.category }}</span>
+    <h3>{{ s.title }}</h3>
+    <div>{{ s.description[:140] }}{{ '…' if s.description|length > 140 }}</div>
+    <div class="meta">by @{{ s.owner.username }} · {{ s.size|filesize }} · {{ s.downloads }} downloads</div>
+    <div class="actions">
+      <a class="btn" href="/download/{{ s.id }}">Download</a>
+      {% if user and user.id == s.owner_id %}
+      <form method="post" action="/delete/{{ s.id }}" onsubmit="return confirm('Delete this cheatsheet?')">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn danger">Delete</button></form>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% if pages > 1 %}
+<div class="pager">
+  {% if page > 1 %}<a href="?q={{ q|urlencode }}&category={{ category|urlencode }}&page={{ page-1 }}">← Prev</a>{% endif %}
+  <span>Page {{ page }} / {{ pages }}</span>
+  {% if page < pages %}<a href="?q={{ q|urlencode }}&category={{ category|urlencode }}&page={{ page+1 }}">Next →</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

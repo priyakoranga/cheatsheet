@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Create account</h1>
+<form class="form" method="post">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label>Email</label><input type="email" name="email" value="{{ email or '' }}" required>
+  <label>Username</label><input name="username" value="{{ username or '' }}" required>
+  <label>Password (min 8 chars)</label><input type="password" name="password" minlength="8" required>
+  <p><button class="btn">Sign up</button></p>
+</form>
+{% endblock %}

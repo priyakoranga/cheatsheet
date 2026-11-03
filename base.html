@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}CheatSheet Hub{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head><body>
+<nav><div class="wrap">
+  <a class="brand" href="/">⚡ CheatSheet Hub</a>
+  {% if user %}
+    <a href="/upload">Upload</a><a href="/mine">My uploads</a>
+    <span class="meta">@{{ user.username }}</span>
+    <form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Logout</button></form>
+  {% else %}
+    <a href="/login">Login</a><a class="btn" href="/register">Sign up</a>
+  {% endif %}
+</div></nav>
+<main class="wrap">
+  {% if flash %}<div class="msg">{{ flash }}</div>{% endif %}
+  {% if error %}<div class="msg err">{{ error }}</div>{% endif %}
+  {% block content %}{% endblock %}
+</main></body></html>

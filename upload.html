@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Upload a cheatsheet</h1>
+<form class="form" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label>Title</label><input name="title" value="{{ title_val or '' }}" maxlength="120" required>
+  <label>Category</label>
+  <select name="category" required>
+    {% for c in categories %}<option {{ 'selected' if c == category_val }}>{{ c }}</option>{% endfor %}
+  </select>
+  <label>Description</label><textarea name="description" rows="4" maxlength="2000">{{ description or '' }}</textarea>
+  <label>File (pdf, png, jpg, md, txt — max 10 MB)</label>
+  <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.md,.txt" required>
+  <p><button class="btn">Upload</button></p>
+</form>
+{% endblock %}
